@@ -52,11 +52,16 @@ function showProducts(){
             connection.query(`SELECT * FROM products WHERE product_name= ?`, productName, function(err, res){
                 if (err) throw err;
                 var newStock = res[0].stock - answer.quantity;
+                var sales = res[0].price * answer.quantity;
+                var selectedDepartment = res[0].department_name;
                 if (answer.quantity <= res[0].stock){
-                    console.log("Got it")
                     connection.query(`UPDATE products SET stock = ? WHERE product_name= ?`, [newStock, productName], function(err, res){
                         if (err) throw err;
-                        console.log(`Thanks for your order of${productPrice}`)
+                        console.log(`Thank you for your order of${productPrice}`)
+                    })
+                    connection.query(`UPDATE products SET product_sales = ? WHERE product_name= ?`, [sales, productName], function(err, res){
+                        if (err) throw err;
+                        // console.log(sales)
                     })
                 } else {
                     console.log("Insufficient quantity")
